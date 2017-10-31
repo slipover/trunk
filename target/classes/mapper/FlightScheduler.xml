@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airport.dao.imp.FlightSchedulerDao">
+    <resultMap id="flightSchedulerResultMap" type="com.airport.entity.FlightScheduler">
+        <result column="flightscheduler_num" property="flightscheduler_num"></result>
+        <result column="flight_startDate" property="flight_startDate"></result>
+        <result column="flight_endDate" property="flight_endDate"></result>
+        <result column="flight_departure" property="flight_departure"></result>
+        <result column="flight_arrival" property="flight_arrival"></result>
+        <result column="flight_scheduler" property="flight_scheduler"></result>
+        <result column="flight_fullPrice" property="flight_fullPrice"></result>
+        <!--航线-->
+        <association property="airline" javaType="com.airport.entity.Airline">
+            <id column="al_id" property="al_id"></id>
+            <result column="al_mileage" property="al_mileage"></result>
+            <association property="airport_from" javaType="com.airport.entity.Airport">
+                <result column="ap_code" property="ap_code"></result>
+                <result column="ap_area" property="ap_area"></result>
+                <result column="ap_city" property="ap_city"></result>
+                <result column="ap_airportname" property="ap_airportname"></result>
+            </association>
+            <association property="airport_to" javaType="com.airport.entity.Airport">
+                <result column="code" property="ap_code"></result>
+                <result column="area" property="ap_area"></result>
+                <result column="city" property="ap_city"></result>
+                <result column="airportname" property="ap_airportname"></result>
+            </association>
+        </association>
+        <!--执行机型-->
+        <association property="aircraft" javaType="com.airport.entity.Aircraft">
+            <result column="air_num" property="air_num"></result>
+            <result column="max_voy" property="max_voy"></result>
+            <result column="mod_a" property="mod_a"></result>
+            <result column="mod_b" property="mod_b"></result>
+            <result column="mod_c" property="mod_c"></result>
+        </association>
+        <!--航班经理-->
+        <!--<association property="user" javaType="com.airport.entity.User">-->
+        <!--<id column="user_id" property="user_id"></id>-->
+        <!--<result column="user_name" property="user_name"></result>-->
+        <!--<result column="user_password" property="user_password"></result>-->
+        <!--<result column="user_tel" property="user_tel"></result>-->
+        <!--<result column="user_province" property="user_province"></result>-->
+        <!--<result column="user_city" property="user_city"></result>-->
+        <!--<result column="user_secret" property="user_secret"></result>-->
+        <!--&lt;!&ndash;权限&ndash;&gt;-->
+        <!--<association property="rol_name" javaType="com.airport.entity.Role">-->
+        <!--<id column="rol_id" property="rol_id"></id>-->
+        <!--<result column="rol_name" property="rol_name"></result>-->
+        <!--<result column="rol_number" property="rol_number"></result>-->
+        <!--</association>-->
+        <!--&lt;!&ndash;权限大小&ndash;&gt;-->
+        <!--<association property="pop_value" javaType="com.airport.entity.Popedom">-->
+        <!--<id column="pop_id" property="pop_id"></id>-->
+        <!--<result column="pop_name" property="pop_name"></result>-->
+        <!--<result column="pop_value" property="pop_value"></result>-->
+        <!--</association>-->
+        <!--&lt;!&ndash;营业网点&ndash;&gt;-->
+        <!--<association property="branch" javaType="com.airport.entity.Branch">-->
+        <!--<id column="bra_id" property="bra_id"></id>-->
+        <!--<result column="bra_name" property="bra_name"></result>-->
+        <!--<result column="bra_addr" property="bra_addr"></result>-->
+        <!--<result column="bra_tel" property="bra_tel"></result>-->
+        <!--<result column="bra_pro" property="bra_pro"></result>-->
+        <!--<result column="bra_city" property="bra_city"></result>-->
+        <!--</association>-->
+        <!--</association>-->
+    </resultMap>
+
+    <select id="selectPage" resultMap="flightSchedulerResultMap">
+        SELECT a.*,b.*,c.*,d.ap_code code,d.ap_area area,d.ap_city city,d.ap_airportname airportname,e.* FROM flightscheduler a,airline b,airport c,airport d,aircraft e WHERE a.flight_airLine=b.al_id AND b.al_from=c.ap_code AND b.al_to=d.ap_code AND a.air_num=e.air_num limit #{pageNo},#{pageSize}
+    </select>
+
+    <insert id="insert" parameterType="com.airport.entity.FlightScheduler">
+        <bind name="flight_airLine" value="airline.getAl_id()"></bind>
+        <bind name="air_num" value="aircraft.getAir_num()"></bind>
+        INSERT INTO flightscheduler(flightschedule_num,flight_startDate,flight_endDate,flight_airLine,flight_departure,flight_arrival,air_num,flight_scheduler,flight_fullPrice) VALUES (#{flight_number},#{flight_startDate},#{flight_endDate},#{flight_airLine},#{flight_departure},#{flight_arrival},#{air_num},#{flight_scheduler},#{flight_fullPrice})
+    </insert>
+
+    <update id="update" parameterType="com.airport.entity.FlightScheduler">
+        <bind name="flight_airLine" value="airline.getAl_id()"></bind>
+        <bind name="air_num" value="aircraft.getAir_num()"></bind>
+        UPDATE flightscheduler SET flight_startDate=#{flight_startDate},flight_endDate=#{flight_airLine},flight_departure=#{flight_departure},flight_arrival=#{flight_arrival},air_num=#{air_num},flight_scheduler=#{flight_scheduler},flight_fullPrice=#{flight_fullPrice} WHERE flightschedule_num=#{flight_number}
+    </update>
+
+    <delete id="delete" parameterType="com.airport.entity.FlightScheduler">
+        DELETE FROM flightscheduler WHERE flightschedule_num=#{flight_number}
+    </delete>
+</mapper>

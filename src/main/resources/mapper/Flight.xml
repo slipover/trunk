@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airport.dao.imp.FlightDao">
+    <resultMap id="flight" type="com.airport.entity.Flight">
+        <result property="flight_num" column="flight_num"></result>
+        <result property="flight_date" column="flight_date"></result>
+        <result property="flight_cabinClassF" column="flight_cabinClassF"></result>
+        <result property="flight_cabinClassC" column="flight_cabinClassC"></result>
+        <result property="flight_cabinClassY" column="flight_cabinClassY"></result>
+        <association property="season_discount" javaType="com.airport.entity.SeasonDiscount">
+            <result property="sd_type" column="sd_type"></result>
+            <result property="sd_re" column="sd_re"></result>
+        </association>
+        <association property="flightScheduler" javaType="com.airport.entity.FlightScheduler">
+            <result property="flightscheduler_num" column="flightscheduler_num"></result>
+            <result property="flight_startDate" column="flight_startDate"></result>
+            <result property="flight_endDate" column="flight_endDate"></result>
+            <result property="flight_departure" column="flight_departure"></result>
+            <result property="flight_arrival" column="flight_arrival"></result>
+            <result property="flight_scheduler" column="flight_scheduler"></result>
+            <result property="flight_fullPrice" column="flight_fullPrice"></result>
+            <association property="airline" javaType="com.airport.entity.Airline">
+                <id property="al_id" column="al_id"></id>
+                <result property="al_mileage" column="al_mileage"></result>
+                <association property="airport_from" javaType="com.airport.entity.Airport">
+                    <result property="ap_code" column="ap_codeA"></result>
+                    <result property="ap_area" column="ap_areaB"></result>
+                    <result property="ap_city" column="ap_cityC"></result>
+                    <result property="ap_airportname" column="ap_airportnameD"></result>
+                </association>
+                <association property="airport_to" javaType="com.airport.entity.Airport">
+                    <result property="ap_code" column="ap_code"></result>
+                    <result property="ap_area" column="ap_area"></result>
+                    <result property="ap_city" column="ap_city"></result>
+                    <result property="ap_airportname" column="ap_airportname"></result>
+                </association>
+            </association>
+            <association property="aircraft" javaType="com.airport.entity.Aircraft">
+                <result property="air_num" column="air_num"></result>
+                <result property="max_voy" column="max_voy"></result>
+                <result property="mod_a" column="mod_a"></result>
+                <result property="mod_b" column="mod_b"></result>
+                <result property="mod_c" column="mod_c"></result>
+            </association>
+            <association property="user" javaType="com.airport.entity.User">
+                <id property="user_id" column="user_id"></id>
+                <result property="user_name" column="user_name"></result>
+                <result property="user_password" column="user_password"></result>
+                <result property="user_tel" column="user_tel"></result>
+                <result property="user_province" column="user_province"></result>
+                <result property="user_city" column="user_city"></result>
+                <result property="user_secret" column="user_secret"></result>
+                <association property="role" javaType="com.airport.entity.Role">
+                    <id property="rol_id" column="rol_id"></id>
+                    <result property="rol_name" column="rol_name"></result>
+                    <result property="rol_number" column="rol_number"></result>
+                </association>
+                <association property="popedom" javaType="com.airport.entity.Popedom">
+                    <result property="pop_id" column="pop_id"></result>
+                    <result property="pop_name" column="pop_name"></result>
+                    <result property="pop_value" column="pop_value"></result>
+                </association>
+                <association property="branch" javaType="com.airport.entity.Branch">
+                    <id property="bra_id" column="bra_id"></id>
+                    <result property="bra_name" column="bra_name"></result>
+                    <result property="bra_addr" column="bra_addr"></result>
+                    <result property="bra_tel" column="bra_tel"></result>
+                    <result property="bra_pro" column="bra_pro"></result>
+                    <result property="bra_city" column="bra_city"></result>
+                </association>
+            </association>
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="com.airport.entity.Flight">
+        <bind name="sd_re" value="season_discount.getSd_re()"></bind>
+        <bind name="flightscheduler_num" value="flightscheduler.getFlightscheduler_num()"></bind>
+        insert into Flight(flight_date,flight_cabinClassF,flight_cabinClassC,flight_cabinClassY,sd_re,flightscheduler_num)value(#{flight_number},#{flight_date},#{flight_cabinClassF},#{flight_cabinClassC},#{flight_cabinClassY},#{sd_re},#{flightscheduler_num})
+    </insert>
+    <update id="update" parameterType="com.airport.entity.Flight">
+        <bind name="sd_re" value="season_discount.getSd_re()"></bind>
+        <bind name="flightscheduler_num" value="flightscheduler.getFlightscheduler_num()"></bind>
+        update Flight set flight_date=#{flight_date},flight_cabinClassF=#{flight_cabinClassF},flight_cabinClassC=#{flight_cabinClassC},flight_cabinClassY=#{flight_cabinClassY},sd_re=#{sd_re},flightscheduler_num=#{flightscheduler_num} where flight_num=#{flight_num}
+    </update>
+    <delete id="delete" parameterType="com.airport.entity.Flight">
+        <bind name="sd_re" value="season_discount.getSd_re()"></bind>
+        <bind name="flightscheduler_num" value="flightscheduler.getFlightscheduler_num()"></bind>
+        delete from Flight where flight_num=#{flight_num}
+    </delete>
+    <select id="selectID" parameterType="int" resultMap="flight">
+        SELECT a.*, b.*,d1.*,d2.ap_area ap_codeA,d2.ap_area ap_areaB,d2.ap_area ap_cityC,d2.ap_airportname ap_airportnameD,e.* from flight a,flightscheduler b,airport d1,airport d2,airline e where
+        a.flightscheduler_num=b.flightscheduler_num and d1.ap_code=e.al_from and d2.ap_code=e.al_to and e.al_id = b.flight_airLine and a.flightscheduler_num=#{flightscheduler_num}
+    </select>
+    <select id="selectAll" resultMap="flight">
+        SELECT a.*, b.*,d1.*,d2.ap_area ap_codeA,d2.ap_area ap_areaB,d2.ap_area ap_cityC,d2.ap_airportname ap_airportnameD,e.* from flight a,flightscheduler b,airport d1,airport d2,airline e where
+        a.flightscheduler_num=b.flightscheduler_num and d1.ap_code=e.al_from and d2.ap_code=e.al_to and e.al_id = b.flight_airLine
+    </select>
+    <select id="selectPage" resultMap="flight">
+        SELECT a.*, b.*,d1.*,d2.ap_area ap_codeA,d2.ap_area ap_areaB,d2.ap_area ap_cityC,d2.ap_airportname ap_airportnameD,e.* from flight a,flightscheduler b,airport d1,airport d2,airline e where
+        a.flightscheduler_num=b.flightscheduler_num and d1.ap_code=e.al_from and d2.ap_code=e.al_to and e.al_id = b.flight_airLine limit #{pageNo},#{pageSize}
+    </select>
+    <select id="selectQuery" resultMap="flight">
+        <bind name="timefrom_" value="'%'+timefrom+'%'"></bind>
+        <bind name="from_" value="'%'+from+'%'"></bind>
+        <bind name="arrival_" value="'%'+arrival+'%'"></bind>
+        SELECT a.*, b.*,d1.*,d2.ap_area ap_codeA,d2.ap_area ap_areaB,d2.ap_area ap_cityC,d2.ap_airportname ap_airportnameD,e.* from flight a,flightscheduler b,airport d1,airport d2,airline e where
+        a.flightscheduler_num=b.flightscheduler_num and d1.ap_code=e.al_from and d2.ap_code=e.al_to and e.al_id = b.flight_airLine  and d1.ap_area like #{from_} and a.flight_date like #{timefrom_}
+    </select>
+</mapper>

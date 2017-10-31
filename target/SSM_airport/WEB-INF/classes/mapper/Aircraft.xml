@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airport.dao.imp.AircraftDao">
+    <insert id="insert" parameterType="com.airport.entity.Aircraft">
+        insert into aircraft (air_num,max_voy,mod_a,mod_b,mod_c) VALUE (#{air_num},#{max_voy},#{mod_a},#{mod_b},#{mod_c})
+    </insert>
+    <update id="update" parameterType="com.airport.entity.Aircraft">
+        update aircraft set max_voy=#{max_voy},mod_a=#{mod_a},mod_b=#{mod_b},mod_c=#{mod_c} where air_num=#{air_num}
+    </update>
+    <delete id="delete" parameterType="com.airport.entity.Aircraft">
+        delete from aircraft where air_num=#{air_num}
+    </delete>
+    <select id="selectID" parameterType="int" resultType="com.airport.entity.Aircraft">
+        SELECT * from aircraft where air_num=#{air_num}
+    </select>
+    <select id="selectAll" resultType="com.airport.entity.Aircraft">
+        SELECT * from aircraft
+    </select>
+    <select id="selectPage" resultType="com.airport.entity.Aircraft">
+        SELECT * from aircraft limit #{pageNo},#{pageSize}
+    </select>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airport.dao.imp.AirlineDao">
+    <resultMap id="airline_" type="com.airport.entity.Airline">
+        <id property="al_id" column="al_id"></id>
+        <result property="al_mileage" column="al_mileage"></result>
+        <association property="airport_from" javaType="com.airport.entity.Airport">
+            <result property="ap_code" column="ap_code"></result>
+            <result property="ap_area" column="ap_area"></result>
+            <result property="ap_city" column="ap_city"></result>
+            <result property="ap_airportname" column="ap_airportname"></result>
+        </association>
+        <association property="airport_to" javaType="com.airport.entity.Airport">
+            <result property="ap_code" column="ap_code"></result>
+            <result property="ap_area" column="ap_area"></result>
+            <result property="ap_city" column="ap_city"></result>
+            <result property="ap_airportname" column="ap_airportname"></result>
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="com.airport.entity.Airline">
+        <bind name="airport_al_from" value="airport_from.getAp_code()"/>
+        <bind name="airport_al_to" value="airport_to.getAp_code()"/>
+        insert into airline (al_id,airport_al_from,airport_al_to,al_mileage) VALUE (#{al_id},#{airport_al_from},#{airport_al_to},#{al_mileage})
+    </insert>
+    <update id="update" parameterType="com.airport.entity.Airline">
+        <bind name="airport_al_from" value="airport_from.getAp_code()"/>
+        <bind name="airport_al_to" value="airport_to.getAp_code()"/>
+        update airline set airport_al_from=#{airport_al_from},airport_al_to=#{airport_al_to},al_mileage=#{al_mileage} where al_id=#{al_id}
+    </update>
+    <delete id="delete" parameterType="com.airport.entity.Airline">
+        delete from airline where  al_id=#{al_id}
+    </delete>
+    <select id="selectID" parameterType="int" resultMap="airline_">
+        select a.*,b.*,c.* from airline a,airport b,airport c where a.al_from=b.ap_code and a.al_to=c.ap_code and a.al_id=#{al_id}
+    </select>
+    <select id="selectAll" resultMap="airline_">
+        select a.*,b.*,c.* from airline a,airport b,airport c where a.al_from=b.ap_code and a.al_to=c.ap_code
+    </select>
+    <select id="selectPage" resultMap="airline_">
+        select a.*,b.*,c.* from airline a,airport b,airport c where a.al_from=b.ap_code and a.al_to=c.ap_code limit #{pageNo},#{pageSize}
+    </select>
+</mapper>

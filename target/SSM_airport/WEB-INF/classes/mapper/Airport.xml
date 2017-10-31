@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airport.dao.imp.AirportDao">
+    <select id="selectPage" resultType="com.airport.entity.Airport">
+        SELECT * FROM airport limit #{pageNo},#{pageSize}
+    </select>
+
+    <insert id="insert" parameterType="com.airport.entity.Airport">
+        INSERT INTO airport(ap_code,ap_area,ap_city,ap_airportname) VALUES (#{ap_code},#{ap_area},#{ap_city},#{ap_airportname})
+    </insert>
+
+    <delete id="delete" parameterType="com.airport.entity.Airport">
+        DELETE FROM airport WHERE ap_code=#{ap_code}
+    </delete>
+
+    <update id="update" parameterType="com.airport.entity.Airport">
+        UPDATE airport SET ap_area=#{ap_area},ap_city=#{ap_city},ap_airportname=#{ap_airportname} WHERE ap_code=#{ap_code}
+    </update>
+</mapper>
